@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  users-db:
+    image: mysql:5.7
+    volumes:
+      - users_db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: users_db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # users-api:
+  #   image: 172.16.239.2:5000/users-api:0.1
+  #   command: python manage.py runserver 0.0.0.0:8000
+  #   # volumes:
+  #   #   - .:/code
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     DATABASE_URL: mysql://root:admin@users-db/users_db
+  #   depends_on:
+  #     - users-db
+  #   deploy:
+  #     replicas: 1
+  #     restart_policy:
+  #       condition: on-failure
+
+volumes:
+  users_db_data:

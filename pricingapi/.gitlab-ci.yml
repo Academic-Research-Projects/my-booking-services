@@ -1,0 +1,95 @@
+variables:
+  DOCKER_HOST: 'tcp://gitlab-runner-dind:2375' # name of the container running which provides the DinD and the default port I suppose
+  # Use the overlayfs driver for improved performance:
+  DOCKER_DRIVER: overlay2 # optionnal
+  DOCKER_TLS_CERTDIR: "" # optionnal
+
+default:
+  image: docker:stable # does not need to be equal to the [runners.docker]...image = "docker:latest" in the runner config.toml apparently
+  #
+  # Pick zero or more services to be used on all builds.
+  # Only needed when using a docker container to run your tests in.
+  # Check out: https://docs.gitlab.com/ee/ci/services/index.html
+  
+  services:
+    - name: docker:dind
+      alias: gitlab-runner-dind # name of the container running which provides the DinD
+      entrypoint: ["dockerd-entrypoint.sh"]
+      command:
+        [
+          "--insecure-registry",
+          "172.16.239.2:5000",
+        ]
+
+  before_script:
+    - docker info
+
+    # Install Docker Compose
+    - apk update
+    - apk upgrade
+    - apk add --no-cache docker-compose
+    - docker-compose --version
+
+    # Install ansible
+    - ls -l
+    #- apk add ansible && ansible --version
+    #- ansible --version
+    #- echo $ANSIBLE_VAULT_PASSWORD > vault_password.txt
+
+
+# define stages of the pipeline
+stages:
+  - build-and-deploy
+
+# test job
+# hello-world:
+#   stage: build
+#   script:
+#     - echo 'hello world'
+
+# our unit tests are only working locally
+# maybe we have to setup the database to perform them
+# something like that
+
+# django-unit-tests:
+#   stage: build
+#   script:
+#     # The MYSQL user only gets permissions for MYSQL_DB, so Django can't create a test database.
+#     - echo "GRANT ALL on *.* to '${MYSQL_USER}';"| mysql -u root --password="${MYSQL_ROOT_PASSWORD}" -h mysql
+#     # use python3 explicitly. see https://wiki.ubuntu.com/Python/3
+#     - python3 manage.py test
+
+build-and-deploy:
+  stage: build-and-deploy
+  before_script:
+    - apk add --update ansible && ansible --version
+    - apk add --update ansible openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY"
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H 172.16.239.2 >> ~/.ssh/known_hosts
+    #- echo $ANSIBLE_VAULT_PASSWORD > vault_password.txt
+    #- export ANSIBLE_VAULT_PASSWORD=vault_password.txt
+
+  script:
+    # - cat ./docker_hub_password | docker login -u corentinbdt --password-stdin
+
+    - docker build -t 172.16.239.2:5000/pricing-api:0.1 pricing_api/
+
+    - docker image ls
+
+    - docker push 172.16.239.2:5000/pricing-api:0.1
+
+    #- echo $ANSIBLE_VAULT_PASSWORD > vault_password.txt
+
+    #- export ANSIBLE_VAULT_PASSWORD_FILE=vault_password.txt
+
+    #- ansible-playbook -i ansible/inventory/inventory.yaml ansible/playbook-deploy-users.yaml --vault-password-file vault_password.txt
+
+    # remove running container
+    # it's going to be something like :
+    # - docker stack rm usersapi
+
+    # deploy new container using ansible
+    - ansible-playbook -i ansible/inventory/inventory.yaml ansible/playbook-deploy-pricing.yaml

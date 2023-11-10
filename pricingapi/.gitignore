@@ -1,0 +1,14 @@
+#ansible
+vault
+user.yml
+
+# ignore all __pycache__ directories of the catalogue api
+pricing_api/core/__pycache__/
+pricing_api/base_prices/__pycache__/
+pricing_api/base_prices/migrations/__pycache__/
+pricing_api/price_variations/__pycache__/
+pricing_api/price_variations/migrations/__pycache__/
+pricing_api/hotel_option_prices/__pycache__/
+pricing_api/hotel_option_prices/migrations/__pycache__/
+
+pricing_api/venv

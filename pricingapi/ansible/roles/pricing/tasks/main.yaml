@@ -1,0 +1,17 @@
+- name: Check if Docker is in Swarm mode
+  shell: docker info | grep "Swarm:"
+  register: swarm_status
+  changed_when: false
+  ignore_errors: true
+
+- name: Copy docker-stack.yml to Remote Host
+  copy:
+    src: docker-stack.yml
+    dest: /tmp/api/pricingapi/docker-stack.yml
+  become: yes
+
+- name: Deploy Pricing API to Docker Swarm
+  command: docker stack deploy -c /tmp/api/pricingapi/docker-stack.yml pricingapi
+  register: deploy_output
+  changed_when: deploy_output.rc == 0
+  become: yes

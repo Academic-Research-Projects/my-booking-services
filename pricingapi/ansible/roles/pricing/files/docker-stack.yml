@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  pricing-db:
+    image: mysql:5.7
+    volumes:
+      - pricing_db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: pricing_db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  pricing-api:
+    image: 172.16.239.2:5000/pricing-api:0.1
+    command: python manage.py runserver 0.0.0.0:8003
+    # volumes:
+    #   - .:/code
+    ports:
+      - "8003:8003"
+    environment:
+      DATABASE_URL: mysql://root:admin@pricing-db/pricing_db
+    depends_on:
+      - pricing-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  pricing_db_data:

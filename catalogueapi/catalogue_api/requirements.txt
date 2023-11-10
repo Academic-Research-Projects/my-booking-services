@@ -1,0 +1,6 @@
+Django==3.2.22 # version downgraded to match with djangorestframework
+djangorestframework==3.11.2 # version downgraded to prevent the "ImportError: Could not import 'drf_yasg.generators.OpenAPISchemaGenerator'" on docker compose up
+django-cors-headers==3.13.0
+mysqlclient==2.1.0
+drf_yasg==1.20.0
+dj-database-url==2.1.0 # for mysql database connection string in settings.py

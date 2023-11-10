@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  catalogue-db:
+    image: mysql:5.7
+    volumes:
+      - catalogue_db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: catalogue_db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  catalogue-api:
+    image: 172.16.239.2:5000/catalogue-api:0.1
+    command: python manage.py runserver 0.0.0.0:8002
+    # volumes:
+    #   - .:/code
+    ports:
+      - "8002:8002"
+    environment:
+      DATABASE_URL: mysql://root:admin@catalogue-db/catalogue_db
+    depends_on:
+      - catalogue-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  catalogue_db_data:

@@ -1,0 +1,4 @@
+- name: Deploy Users API in Cluster Docker Swarm
+  hosts: swarm_managers
+  roles:
+    - bookings

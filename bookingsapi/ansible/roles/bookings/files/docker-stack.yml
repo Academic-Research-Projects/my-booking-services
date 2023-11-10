@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  # bookings-db:
+  #   image: mysql:5.7
+  #   volumes:
+  #     - bookings_db_data:/var/lib/mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: admin
+  #     MYSQL_DATABASE: bookings_db
+  #   deploy:
+  #     replicas: 1
+  #     restart_policy:
+  #       condition: on-failure
+
+  bookings-api:
+    image: 172.16.239.2:5000/bookings-api:0.1
+    command: python manage.py runserver 0.0.0.0:8001
+    # volumes:
+    #   - .:/code
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: mysql://root:admin@bookings-db/bookings_db
+    depends_on:
+      - bookings-db
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  bookings_db_data:
