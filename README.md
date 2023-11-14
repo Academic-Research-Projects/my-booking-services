@@ -1,8 +1,8 @@
 # My Booking services
 Team :
 👨🏼‍🦱 Corentin BAUDET
-👦🏻 Jean-Antoine MARO
 👩🏻 Génesis LOIZAGA
+👦🏻 Jean-Antoine MARO
 🧔🏻 François UTZMANN
 
 The aim of this school project is to work in a DevOps context, building a microservices web application on a clustered infrastructure. One of the major constraints has been the continuous deployment of our work.
