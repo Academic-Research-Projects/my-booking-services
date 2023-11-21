@@ -18,12 +18,13 @@ The role of the team is to set up a hotel booking API. The customer wants to be 
 - Gitlab & Gitlab CI
 - Django Python
 
-## The infrastructure
+### The infrastructure
+We had three Linux servers at our disposition, provided by the school. We deployed via Ansible a Docker Swarm cluster with one node master, and two worker nodes.
 
+### The CI/CD process
+Currently, we have created one .gitlab-ci.yaml file per API. It allows us to build the Docker images of our APIs, and also to deploy each API via Ansible playbooks.
 
 ## The microservices architecture
-
-
 ![Pipeline CI_CD - Page 2](https://github.com/Academic-Research-Projects/my-booking-services/assets/61324708/59b532bc-221a-4dce-9697-cb163e4288b9)
 
 
