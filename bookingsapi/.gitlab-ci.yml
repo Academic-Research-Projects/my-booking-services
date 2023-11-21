@@ -5,8 +5,7 @@ variables:
   DOCKER_TLS_CERTDIR: "" # optionnal
 
 default:
-  image: docker:stable # does not need to be equal to the [runners.docker]...image = "docker:latest" in the runner config.toml apparently
-  
+  image: docker:stable # does not need to be equal to the [runners.docker]...image = "docker:latest" in the runner config.toml apparently  
   services:
     - name: docker:dind
       alias: gitlab-runner-dind # name of the container running which provides the DinD
@@ -19,7 +18,6 @@ default:
 
   before_script:
     - docker info
-
     # Install Docker Compose
     - apk update
     - apk upgrade
@@ -44,11 +42,8 @@ build-and-deploy:
 
   script:
     - cat ./docker_hub_password | docker login -u corentinbdt --password-stdin
-
     - docker build -t 172.16.239.2:5000/bookings-api:0.1 bookings_api/
-
     - docker image ls
-
     - docker push 172.16.239.2:5000/bookings-api:0.1
 
     # deploy new container using ansible
