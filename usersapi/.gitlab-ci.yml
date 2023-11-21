@@ -49,5 +49,3 @@ build-and-deploy:
 
     # deploy new container using ansible
     - ansible-playbook -i ansible/inventory/inventory.yaml ansible/playbook-deploy-users.yaml
- 
-  # environment: production
