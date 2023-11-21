@@ -23,7 +23,8 @@ The role of the team is to set up a hotel booking API. The customer wants to be 
 
 ## The microservices architecture
 
-![Pipeline CI_CD - Page 2](https://github.com/Academic-Research-Projects/my-booking-services/assets/61324708/228a52ab-d285-432e-b227-6749ca201af3)
+
+![Pipeline CI_CD - Page 2](https://github.com/Academic-Research-Projects/my-booking-services/assets/61324708/59b532bc-221a-4dce-9697-cb163e4288b9)
 
 
 ## The web application
