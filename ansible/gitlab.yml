@@ -1,0 +1,7 @@
+---
+- name: Install GitLab
+  hosts: vm01
+  vars_files:
+    - inventory/dev/group_vars/virtualmachines/gitlab_vault.yml
+  roles:
+    - gitlab

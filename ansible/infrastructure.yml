@@ -1,0 +1,14 @@
+- name: Deploy Docker Swarm Cluster
+  hosts: all
+  roles:
+    - docker_swarm
+
+- name: Deploy Docker Registry
+  hosts: swarm_managers # Only on the manager node
+  roles:
+    - docker_registry
+
+- name: Deploy TICK Stack
+  hosts: swarm_managers
+  roles:
+    - docker_tickstack

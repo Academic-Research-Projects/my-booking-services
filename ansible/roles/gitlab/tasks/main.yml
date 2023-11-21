@@ -1,0 +1,71 @@
+---
+- name: GitLab dependencies
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - curl
+    - openssh-server
+    - ca-certificates
+    - perl
+    # - postfix
+
+- name: Check if GitLab is already installed
+  stat:
+    path: /opt/gitlab
+  register: gitlab_installed
+
+- name: Add GitLab package repository
+  get_url:
+    url: https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh
+    dest: /tmp/gitlab-ce.deb.sh
+  when: not gitlab_installed.stat.exists
+
+- name: Execute GitLab-CE Debian script
+  command: /bin/bash /tmp/gitlab-ce.deb.sh
+  when: not gitlab_installed.stat.exists
+
+- name: Install GitLab Community Edition
+  package:
+    name: gitlab-ce
+    state: present
+  environment:
+    EXTERNAL_URL: "http://{{ ansible_ssh_host }}"
+    GITLAB_ROOT_PASSWORD: "{{ gitlab_root_password }}"
+  when: not gitlab_installed.stat.exists
+
+- name: Show GitLab url
+  debug:
+    msg: "http://{{ ansible_ssh_host }}"
+
+- name: Retrieve admin token
+  uri:
+    url: "http://{{ ansible_ssh_host }}/oauth/token"
+    method: POST
+    body_format: json
+    body:
+      grant_type: password
+      username: root
+      password: "{{ gitlab_root_password }}"
+  register: result
+  changed_when: false
+
+- name: Create users
+  uri:
+    url: "http://{{ ansible_ssh_host }}/api/v4/users"
+    method: POST
+    body_format: json
+    body:
+      email: "{{ item.email }}"
+      username: "{{ item.username }}"
+      name: "{{ item.name }}"
+      password: "{{ item.password }}"
+      skip_confirmation: true
+    headers:
+      Authorization: "Bearer {{ result.json.access_token }}"
+    status_code:
+      - 200
+      - 201
+  with_items:
+    - { email: "rafina_d@etna-alternance.net", username: "rafina_d", name: "Dany RAFINA", password: "P@SSW0RD" }
+    - { email: "rinaz_a@tna-alternance.net", username: "rinaz_a", name: "Selim RINAZ", password: "P@SSW0RD" }

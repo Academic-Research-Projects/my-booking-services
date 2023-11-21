@@ -1,0 +1,15 @@
+- name: Pull Docker registry image
+  command:
+    cmd: docker pull {{ docker_registry }}
+  become: yes
+
+- name: Start Docker registry container
+  docker_container:
+    name: "{{ docker_registry_name }}" 
+    image: "{{ docker_registry }}"
+    ports:
+      - "{{ docker_registry_port }}:5000"
+    volumes:
+      - /opt/docker_registry:/var/lib/registry
+    restart_policy: always
+  become: yes

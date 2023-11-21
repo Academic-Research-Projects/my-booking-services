@@ -1,0 +1,44 @@
+- name: Check if Docker is in Swarm mode
+  shell: docker info | grep "Swarm:"
+  register: swarm_status
+  changed_when: false
+  ignore_errors: true
+
+- name: Pull Tick Images from Docker Hub
+  command: docker pull {{ item }}
+  with_items: "{{ tickstack_services }}"
+  register: pull_output
+  changed_when: pull_output.rc == 0
+  become: yes
+
+- name: Tag and Prepare Images for Docker Registry and push images to private registry
+  command: docker tag {{ item }} {{ docker_registry }}/{{ item }}
+  with_items: "{{ tickstack_services }}"
+  register: tag_output
+  changed_when: tag_output.rc == 0
+  become: yes
+
+- name: Push Images to Docker Registry
+  command: docker push {{ docker_registry }}/{{ item }}
+  with_items: "{{ tickstack_services }}"
+  register: push_output
+  changed_when: push_output.rc == 0
+  become: yes
+
+- name: Copy Telegrah Conf file to Remote Host
+  copy:
+    src: conf
+    dest: /tmp
+  become: yes
+
+- name: Copy docker-stack.yml to Remote Host
+  copy:
+    src: files/docker-stack.yml
+    dest: /tmp/docker-stack.yml
+  become: yes
+
+- name: Deploy TICK Stack Services to Docker Swarm
+  command: docker stack deploy -c /tmp/docker-stack.yml tickstack
+  register: deploy_output
+  changed_when: deploy_output.rc == 0
+  become: yes

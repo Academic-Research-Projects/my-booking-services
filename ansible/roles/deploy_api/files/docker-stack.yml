@@ -1,0 +1,29 @@
+# version "3":
+
+# services:
+#   users-api:
+#     container_name: users-api
+#     image: 172.16.239.2:5000/users-api:0.1
+#     deploy:
+#       replicas: 1
+#     ports:
+#       "8000:8000"
+#     environment:
+#       DATABASE_URL: mysql://root:admin@users-db/users_db
+#     networks:
+#       - default-network
+#     depends_on:
+#       - users-db
+
+#   users-db:
+#     container_name: users-db
+#     image: 172.16.239.2:5000/mysql
+#     volumes:
+#       - mysql_users_data:/var/lib/mysql/
+#       # - ./users_api/init.sql:/data/application/init.sql
+#     environment:
+#       MYSQL_ROOT_PASSWORD: admin
+#       MYSQL_DATABASE: users_db
+#     networks:
+#       - default_network
+#     restart: always

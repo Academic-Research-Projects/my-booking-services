@@ -1,0 +1,9 @@
+
+tickstack_services:
+  - influxdb:1.8
+  - telegraf:latest
+  - chronograf:latest
+  - kapacitor:latest
+
+
+docker_registry: 172.16.239.2:5000

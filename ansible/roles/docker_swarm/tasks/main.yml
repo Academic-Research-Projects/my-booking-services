@@ -1,0 +1,27 @@
+- name: Check if Docker is in Swarm mode
+  shell: docker info | grep "Swarm:"
+  register: swarm_status
+  changed_when: false
+  ignore_errors: true
+
+- name: Initialize Docker Swarm
+  command: docker swarm init
+  when: swarm_status.stdout.find('inactive') != -1
+  run_once: true
+  delegate_to: "{{ swarm_manager }}"
+  become: yes
+
+- name: Get Swarm worker join token
+  command: docker swarm join-token worker -q
+  run_once: true
+  delegate_to: "{{ swarm_manager }}"
+  register: worker_token
+  become: yes
+
+- name: Join Swarm as Worker
+  command: >
+    docker swarm join --token {{ worker_token.stdout }} {{ swarm_manager_ip }}:{{ swarm_manager_port }}
+  when: 
+    - inventory_hostname in swarm_workers
+    - swarm_status.stdout.find("active") == -1
+  become: yes

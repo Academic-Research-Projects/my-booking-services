@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  influxdb:
+    image: 172.16.239.2:5000/influxdb:1.8
+    deploy:
+      replicas: 1
+    ports: 
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb
+  
+  telegraf:
+    image: 172.16.239.2:5000/telegraf:latest
+    deploy:
+      replicas: 1
+    configs:
+      - source: telegraf-config
+        target: /etc/telegraf/telegraf.conf
+    depends_on:
+      - influxdb
+
+  chronograf:
+    image: 172.16.239.2:5000/chronograf:latest
+    deploy:
+      replicas: 1
+    ports:
+      - "8888:8888"
+
+  kapacitor:
+    image: 172.16.239.2:5000/kapacitor:latest
+    deploy:
+      replicas: 1
+    volumes:
+      - kapacitor-data:/var/lib/kapacitory
+
+volumes:
+  influxdb-data:
+  kapacitor-data:
+
+configs:
+  telegraf-config: 
+    file: /tmp/conf/telegraf.conf

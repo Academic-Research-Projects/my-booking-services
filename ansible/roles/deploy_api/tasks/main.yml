@@ -1,0 +1,22 @@
+---
+# tasks file for deploy_api
+
+- name: run api container
+  docker:
+    registry: 172.16.239.2:5000
+    insecure_registry: true
+    image: 172.16.239.2:5000/users-api:0.1
+    state: reloaded
+    pull: always
+    ports:
+      - "8000:8000"
+
+- name: run db container
+  docker:
+    registry: 172.16.239.2:5000
+    insecure_registry: true
+    image: 172.16.239.2:5000/users-api:0.1
+    state: reloaded
+    pull: always
+    ports:
+      - "8000:8000"

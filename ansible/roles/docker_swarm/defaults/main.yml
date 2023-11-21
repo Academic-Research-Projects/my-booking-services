@@ -1,0 +1,5 @@
+swarm_manager: "{{ groups['swarm_managers'][0] }}"
+swarm_manager_ip: 172.16.239.2
+swarm_manager_port: 2377
+
+swarm_workers: "{{ groups['swarm_workers'] }}"
