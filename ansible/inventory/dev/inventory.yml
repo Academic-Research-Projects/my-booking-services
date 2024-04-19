@@ -1,12 +1,25 @@
-virtualmachines:
-  children: # Same behavior as nested groups
-    swarm_managers:
+# virtualmachines:
+#   children: # Same behavior as nested groups
+#     swarm_managers:
+#       hosts:
+#         vm01:
+#           ansible_host: 172.16.239.2 #7.7G of RAM, 5.4 free
+#     swarm_workers:
+#       hosts:
+#         vm02:
+#           ansible_host: 172.16.239.34 #3.8G of RAM, 1.5 free
+#         vm03:
+#           ansible_host: 172.16.239.28 #3.8G of RAM, 1.5 free
+
+gcpvms:
+  children:
+    masters:
       hosts:
         vm01:
-          ansible_host: 172.16.239.2 #7.7G of RAM, 5.4 free
-    swarm_workers:
+          ansible_host: 34.163.189.173 # 8vCPU 16GB RAM
+    slaves:
       hosts:
         vm02:
-          ansible_host: 172.16.239.34 #3.8G of RAM, 1.5 free
+          ansible_host: 34.163.163.44 # 2vCPU 4GB RAM
         vm03:
-          ansible_host: 172.16.239.28 #3.8G of RAM, 1.5 free
+          ansible_host: 34.155.204.48 # 2vCPU 4GB RAM
